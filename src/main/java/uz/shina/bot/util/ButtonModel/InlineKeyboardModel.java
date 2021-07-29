@@ -14,7 +14,7 @@ public class InlineKeyboardModel extends InlineKeyboardButton {
         super();
     }
 
-    @Builder
+//    @Builder
     public InlineKeyboardModel(String text,
                                String callbackData,
                                String url,
@@ -43,8 +43,8 @@ public class InlineKeyboardModel extends InlineKeyboardButton {
     }
 
     @Override
-    public InlineKeyboardButton setText(String text) {
-        return super.setText(text);
+    public void setText(String text) {
+        super.setText(text);
     }
 
     @Override
@@ -53,8 +53,8 @@ public class InlineKeyboardModel extends InlineKeyboardButton {
     }
 
     @Override
-    public InlineKeyboardButton setUrl(String url) {
-        return super.setUrl(url);
+    public void setUrl(String url) {
+        super.setUrl(url);
     }
 
     @Override
@@ -63,8 +63,8 @@ public class InlineKeyboardModel extends InlineKeyboardButton {
     }
 
     @Override
-    public InlineKeyboardButton setCallbackData(String callbackData) {
-        return super.setCallbackData(callbackData);
+    public void setCallbackData(String callbackData) {
+        super.setCallbackData(callbackData);
     }
 
     @Override
@@ -73,8 +73,8 @@ public class InlineKeyboardModel extends InlineKeyboardButton {
     }
 
     @Override
-    public InlineKeyboardButton setSwitchInlineQuery(String switchInlineQuery) {
-        return super.setSwitchInlineQuery(switchInlineQuery);
+    public void setSwitchInlineQuery(String switchInlineQuery) {
+        super.setSwitchInlineQuery(switchInlineQuery);
     }
 
     @Override
@@ -83,8 +83,8 @@ public class InlineKeyboardModel extends InlineKeyboardButton {
     }
 
     @Override
-    public InlineKeyboardButton setCallbackGame(CallbackGame callbackGame) {
-        return super.setCallbackGame(callbackGame);
+    public void setCallbackGame(CallbackGame callbackGame) {
+        super.setCallbackGame(callbackGame);
     }
 
     @Override
@@ -93,8 +93,8 @@ public class InlineKeyboardModel extends InlineKeyboardButton {
     }
 
     @Override
-    public InlineKeyboardButton setSwitchInlineQueryCurrentChat(String switchInlineQueryCurrentChat) {
-        return super.setSwitchInlineQueryCurrentChat(switchInlineQueryCurrentChat);
+    public void setSwitchInlineQueryCurrentChat(String switchInlineQueryCurrentChat) {
+        super.setSwitchInlineQueryCurrentChat(switchInlineQueryCurrentChat);
     }
 
     @Override
@@ -103,8 +103,8 @@ public class InlineKeyboardModel extends InlineKeyboardButton {
     }
 
     @Override
-    public InlineKeyboardButton setPay(Boolean pay) {
-        return super.setPay(pay);
+    public void setPay(Boolean pay) {
+        super.setPay(pay);
     }
 
     @Override
@@ -113,8 +113,8 @@ public class InlineKeyboardModel extends InlineKeyboardButton {
     }
 
     @Override
-    public InlineKeyboardButton setLoginUrl(LoginUrl loginUrl) {
-        return super.setLoginUrl(loginUrl);
+    public void setLoginUrl(LoginUrl loginUrl) {
+        super.setLoginUrl(loginUrl);
     }
 
     @Override

@@ -25,4 +25,7 @@ public class FileStorage  {
     @Enumerated(EnumType.STRING)
 
     private FileStorageStatus fileStorageStatus;
+
+    @ManyToOne
+    private Product product;
 }

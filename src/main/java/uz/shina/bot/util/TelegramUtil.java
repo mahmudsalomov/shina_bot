@@ -8,28 +8,28 @@ import uz.shina.bot.entity.User;
 import uz.shina.bot.util.ButtonModel.InlineKeyboardModel;
 
 public class TelegramUtil {
-    public static SendMessage createMessageTemplate(User user) {
-        return createMessageTemplate(String.valueOf(user.getChatId()));
-    }
-    public static EditMessageReplyMarkup createEditMessageTemplate(String chatId,String inlineID) {
-        return new EditMessageReplyMarkup().setChatId(chatId).setInlineMessageId(inlineID);
-    }
-
-    public static SendMessage createMessageTemplate(String chatId) {
-        return new SendMessage()
-                .setChatId(chatId)
-                .enableMarkdown(true);
-    }
-
-    public static SendPhoto createPhotoTemplate(Integer chatId){
-        return new SendPhoto().setChatId(String.valueOf(chatId));
-    }
-
-    public static InlineKeyboardButton createInlineKeyboardButton(String text, String command) {
-        return new InlineKeyboardButton()
-                .setText(text)
-                .setCallbackData(command);
-    }
+//    public static SendMessage createMessageTemplate(User user) {
+//        return createMessageTemplate(String.valueOf(user.getChatId()));
+//    }
+//    public static EditMessageReplyMarkup createEditMessageTemplate(String chatId,String inlineID) {
+//        return new EditMessageReplyMarkup().setChatId(chatId).setInlineMessageId(inlineID);
+//    }
+//
+//    public static SendMessage createMessageTemplate(String chatId) {
+//        return new SendMessage()
+//                .setChatId(chatId)
+//                .enableMarkdown(true);
+//    }
+//
+//    public static SendPhoto createPhotoTemplate(Integer chatId){
+//        return new SendPhoto().setChatId(String.valueOf(chatId));
+//    }
+//
+//    public static InlineKeyboardButton createInlineKeyboardButton(String text, String command) {
+//        return new InlineKeyboardButton()
+//                .setText(text)
+//                .setCallbackData(command);
+//    }
 
     public static InlineKeyboardButton keyboard(String text){
         return InlineKeyboardModel

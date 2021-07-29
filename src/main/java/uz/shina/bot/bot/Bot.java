@@ -1,9 +1,9 @@
 package uz.shina.bot.bot;
 
-import com.example.mit.model.User;
-import com.example.mit.repository.UserRepository;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -39,71 +40,41 @@ public class Bot extends TelegramLongPollingBot {
     private String botToken;
 
     @Autowired
-    private UserRepository userRepository;
-    private final UpdateReceiver updateReceiver;
+    private BotService botService;
 
+
+    @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        List<PartialBotApiMethod<? extends Serializable>> messagesToSend = updateReceiver.handle(update);
-        if (messagesToSend != null && !messagesToSend.isEmpty()) {
 
-            messagesToSend.forEach(response -> {
-                if (response instanceof SendMessage) {
-
-
-
-                    if (update.hasCallbackQuery()) {
-                        Optional<User> user = userRepository.getByChatId(update.getCallbackQuery().getFrom().getId());
-
-                        if (user.isPresent()&&user.get().getPhone()!=null&&user.get().getLanguage()!=null){
-                            long message_id = update.getCallbackQuery().getMessage().getMessageId();
-                            long chat_id = update.getCallbackQuery().getMessage().getChatId();
-
-                            try {
-                                InlineKeyboardMarkup replyMarkup=null;
-                                try {
-                                    replyMarkup = (InlineKeyboardMarkup) ((SendMessage) response).getReplyMarkup();
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                                EditMessageText new_message = new EditMessageText()
-                                        .setChatId(chat_id)
-                                        .setMessageId(toIntExact(message_id))
-                                        .enableMarkdown(true)
-                                        .setReplyMarkup(replyMarkup)
-                                        .setText(((SendMessage) response).getText());
-                                execute(new_message);
-                            } catch (TelegramApiException e) {
-                                executeWithExceptionCheck((SendMessage) response);
-//                            e.printStackTrace();
-                            }
-                        }
-                        else
-                        executeWithExceptionCheck((SendMessage) response);
-
-
-
-                    } else
-                    {
-                        if (update.getMessage().hasContact()){
-                            deleteMessage(update);
-                            executeWithExceptionCheck((SendMessage) response);
-                        }
-                        else
-                            executeWithExceptionCheck((SendMessage) response);
-                    }
-                }
-                if (response instanceof SendPhoto) {
-                    executeWithExceptionCheck((SendPhoto) response);
-                }else if (response instanceof EditMessageReplyMarkup){
-                    executeWithExceptionCheck((EditMessageReplyMarkup) response);
-                }else if (response instanceof AnswerCallbackQuery){
-                    executeWithExceptionCheck((AnswerCallbackQuery) response);
-                }
-
-            });
+        if (update.hasMessage()){
+            SendMessage sendMessage = botService.category(update.getMessage().getChatId());
+            executeWithExceptionCheck(sendMessage);
         }
-//       deleteMessage(update);
+        else {
+            if (update.hasCallbackQuery()){
+//                if (update.getCallbackQuery().getData().startsWith("p")){
+//                    SendMediaGroup sendMediaGroup = botService.productWithImage(update.getCallbackQuery().getFrom().getId(), Integer.valueOf(removeFirstChar(update.getCallbackQuery().getData())));
+//                    execute(sendMediaGroup);
+//                }
+
+
+
+                SendMessage sendMessage = botService.finder(update.getCallbackQuery());
+                executeWithExceptionCheck(sendMessage);
+            }
+        }
+
+
+    }
+
+    // Геттеры, которые необходимы для наследования от TelegramLongPollingBot
+    public String getBotUsername() {
+        return botUsername;
+    }
+
+    public String getBotToken() {
+        return botToken;
     }
 
     public void executeWithExceptionCheck(SendMessage sendMessage) {
@@ -113,6 +84,43 @@ public class Bot extends TelegramLongPollingBot {
             e.printStackTrace();
             log.error("oops");
         }
+    }
+
+    public void executeWithExceptionCheck(SendMessage sendMessage,Update update) {
+
+        EditMessageText editMessageText=new EditMessageText();
+        EditMessageReplyMarkup editMessageReplyMarkup=new EditMessageReplyMarkup();
+            if (update.hasMessage()) {
+                editMessageText.setChatId(String.valueOf(update.getMessage().getChatId()));
+                editMessageText.setMessageId(update.getMessage().getMessageId());
+                editMessageText.setText(sendMessage.getText());
+
+
+                editMessageReplyMarkup.setChatId(String.valueOf(update.getMessage().getChatId()));
+                editMessageReplyMarkup.setMessageId(update.getMessage().getMessageId());
+                editMessageReplyMarkup.setReplyMarkup((InlineKeyboardMarkup) sendMessage.getReplyMarkup());
+            } else {
+                editMessageText.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
+                editMessageText.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
+                editMessageText.setText(sendMessage.getText());
+
+
+                editMessageReplyMarkup.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
+                editMessageReplyMarkup.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
+                editMessageReplyMarkup.setReplyMarkup((InlineKeyboardMarkup) sendMessage.getReplyMarkup());
+
+            }
+        try {
+            execute(editMessageText);
+            execute(editMessageReplyMarkup);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public String removeFirstChar(String s){
+        return s.substring(1);
     }
 
     public void executeWithExceptionCheck(EditMessageReplyMarkup sendMessage) {
@@ -150,36 +158,38 @@ public class Bot extends TelegramLongPollingBot {
 //    }
 
 
-    public void editMessage(Update update){
-        EditMessageText editMessageText=new EditMessageText();
-        EditMessageReplyMarkup editMessageReplyMarkup=new EditMessageReplyMarkup();
-
-        if (update.hasMessage()) {
-            editMessageText.setChatId(update.getMessage().getChatId()).setMessageId(update.getMessage().getMessageId());
-            editMessageReplyMarkup.setChatId(update.getMessage().getChatId()).setMessageId(update.getMessage().getMessageId());
-        } else {
-            editMessageText.setMessageId(update.getCallbackQuery().getMessage().getMessageId()).setChatId(update.getCallbackQuery().getMessage().getChatId());
-            editMessageReplyMarkup.setMessageId(update.getCallbackQuery().getMessage().getMessageId()).setChatId(update.getCallbackQuery().getMessage().getChatId());
-        }
-        try {
-            execute(editMessageText);
-            execute(editMessageReplyMarkup);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void deleteMessage(Update update){
-        DeleteMessage deleteMessage=new DeleteMessage();
-        if (update.hasMessage()) {
-            deleteMessage.setChatId(update.getMessage().getChatId()).setMessageId(update.getMessage().getMessageId()-1);
-        } else {
-            deleteMessage.setMessageId(update.getCallbackQuery().getMessage().getMessageId()).setChatId(update.getCallbackQuery().getMessage().getChatId());
-        }
-        try {
-            execute(deleteMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void editMessage(Update update){
+//        EditMessageText editMessageText=new EditMessageText();
+//        EditMessageReplyMarkup editMessageReplyMarkup=new EditMessageReplyMarkup();
+//
+//        if (update.hasMessage()) {
+//            editMessageText
+//                    .setChatId(String.valueOf(update.getMessage().getChatId()))
+//                    .setMessageId(update.getMessage().getMessageId());
+//            editMessageReplyMarkup.setChatId(String.valueOf(update.getMessage().getChatId())).setMessageId(update.getMessage().getMessageId());
+//        } else {
+//            editMessageText.setMessageId(update.getCallbackQuery().getMessage().getMessageId()).setChatId(update.getCallbackQuery().getMessage().getChatId());
+//            editMessageReplyMarkup.setMessageId(update.getCallbackQuery().getMessage().getMessageId()).setChatId(update.getCallbackQuery().getMessage().getChatId());
+//        }
+//        try {
+//            execute(editMessageText);
+//            execute(editMessageReplyMarkup);
+//        } catch (TelegramApiException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public void deleteMessage(Update update){
+//        DeleteMessage deleteMessage=new DeleteMessage();
+//        if (update.hasMessage()) {
+//            deleteMessage.setChatId(String.valueOf(update.getMessage().getChatId())).setMessageId(update.getMessage().getMessageId()-1);
+//        } else {
+//            deleteMessage.setMessageId(update.getCallbackQuery().getMessage().getMessageId()).setChatId(update.getCallbackQuery().getMessage().getChatId());
+//        }
+//        try {
+//            execute(deleteMessage);
+//        } catch (TelegramApiException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

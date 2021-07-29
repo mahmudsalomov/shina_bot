@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<link type="text/css" href="/webjars/bootstrap/4.1.1/css/bootstrap.min.css"
+      rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Napa</title>
+</head>
+<body style="background-color: lightgray" onload="" class="d-flex justify-content-center text-center container-fluid">
+
+<section class="container text-center d-flex justify-content-center row">
+    <!--    <a href="/admin/add" class="btn btn-success float-right mt-2 mb-2 col-2">Plan qo'shish</a>-->
+    <div class="d-flex justify-content-center text-center col-12">
+        <h1>Plans</h1>
+    </div>
+
+    <div class="row w-100 text-center justify-content-center d-flex">
+        <input id="name" class="form-control col-md-6" placeholder="Kategoriya nomi"/>
+        <button onclick="addCategory()" class="btn col-md-4 btn-success">Qo'shish</button>
+    </div>
+
+
+    <div class="d-flex justify-content-center text-center col-12">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+<!--                <th scope="col">Price</th>-->
+                <!--                <th scope="col">Username</th>-->
+                <!--                <th scope="col">Action</th>-->
+            </tr>
+            </thead>
+            <tbody id="root">
+<!--            <tr>-->
+<!--                <th scope="row">1</th>-->
+<!--                <td>Mark</td>-->
+<!--                <td>Otto</td>-->
+<!--                <td>@mdo</td>-->
+<!--                <td><a class="btn-success btn">Batafsil</a></td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <th scope="row">2</th>-->
+<!--                <td>Jacob</td>-->
+<!--                <td>Thornton</td>-->
+<!--                <td>@fat</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <th scope="row">3</th>-->
+<!--                <td>Larry</td>-->
+<!--                <td>the Bird</td>-->
+<!--                <td>@twitter</td>-->
+<!--            </tr>-->
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+</section>
+
+
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    axios.get("http://localhost:8080/api/category/all")
+        .then(function (response) {
+            console.log(response)
+            console.log(response.data)
+            console.log(response.data.object)
+            // console.log(response.data.object[0])
+
+            let out="";
+            let data=response.data.object;
+            for (let i = 0; i < data.length; i++) {
+                out+="<tr>\n" +
+                    "            <th scope=\"row\">"+data[i].id+"</th>\n" +
+                    "            <td>"+data[i].name+"</td>\n" +
+                    // "            <td>"+data[i].actualprice+"</td>\n" +
+                    // "            <td>"+data[i].username+"</td>\n" +
+                    "<td>" +
+                    "<a href='/admin/plan/"+data[i].id+"' class=\"btn-danger btn\">Edit</a>" +
+                    // "<a href='/admin/plan/"+data[i].id+"' class=\"btn-success btn\">Delete</a>" +
+                    "<a href='/admin/plan/"+data[i].id+"' class=\"btn-success btn\">Products</a>" +
+                    "</td>"+
+                    "</tr>"
+            }
+            document.getElementById("root").innerHTML=out;
+
+        })
+
+    function addCategory() {
+        let name=document.getElementById("name").value;
+        let data={
+            name:name,
+            active:true
+        }
+        axios.post("http://localhost:8080/api/category/add",data)
+            .then(function (response) {
+                console.log(response);
+                let out="";
+                let data=response.data.object;
+                for (let i = 0; i < data.length; i++) {
+                    out+="<tr>\n" +
+                        "            <th scope=\"row\">"+data[i].id+"</th>\n" +
+                        "            <td>"+data[i].name+"</td>\n" +
+                        // "            <td>"+data[i].actualprice+"</td>\n" +
+                        // "            <td>"+data[i].username+"</td>\n" +
+                        "<td><a href='/admin/plan/"+data[i].id+"' class=\"btn-success btn\">Batafsil</a></td>"+
+                        "</tr>"
+                }
+                location.reload()
+            })
+    }
+
+
+    function sortasc() {
+        let select=document.getElementById("select");
+        axios.get("http://localhost:8080/api/asc")
+            .then(function (response) {
+                console.log(response);
+                let out="";
+                let data=response.data;
+                for (let i = 0; i < data.length; i++) {
+                    out+="<tr>\n" +
+                        "            <th scope=\"row\">"+data[i].id+"</th>\n" +
+                        "            <td>"+data[i].nameOz+"</td>\n" +
+                        "            <td>"+data[i].actualprice+"</td>\n" +
+                        // "            <td>"+data[i].username+"</td>\n" +
+                        "<td><a href='/admin/plan/"+data[i].id+"' class=\"btn-success btn\">Batafsil</a></td>"+
+                        "</tr>"
+                }
+                document.getElementById("root").innerHTML=out;
+            })
+    }
+
+
+
+    function sortdesc() {
+        let select=document.getElementById("select");
+        axios.get("http://localhost:8080/api/desc")
+            .then(function (response) {
+                console.log(response);
+                let out="";
+                let data=response.data;
+                for (let i = 0; i < data.length; i++) {
+                    out+="<tr>\n" +
+                        "            <th scope=\"row\">"+data[i].id+"</th>\n" +
+                        "            <td>"+data[i].nameOz+"</td>\n" +
+                        "            <td>"+data[i].actualprice+"</td>\n" +
+                        // "            <td>"+data[i].username+"</td>\n" +
+                        "<td><a href='/admin/plan/"+data[i].id+"' class=\"btn-success btn\">Batafsil</a></td>"+
+                        "</tr>"
+                }
+                document.getElementById("root").innerHTML=out;
+            })
+    }
+
+
+    function sortascname() {
+        let select=document.getElementById("select");
+        axios.get("http://localhost:8080/api/ascname")
+            .then(function (response) {
+                console.log(response);
+                let out="";
+                let data=response.data;
+                for (let i = 0; i < data.length; i++) {
+                    out+="<tr>\n" +
+                        "            <th scope=\"row\">"+data[i].id+"</th>\n" +
+                        "            <td>"+data[i].nameOz+"</td>\n" +
+                        "            <td>"+data[i].actualprice+"</td>\n" +
+                        // "            <td>"+data[i].username+"</td>\n" +
+                        "<td><a href='/admin/plan/"+data[i].id+"' class=\"btn-success btn\">Batafsil</a></td>"+
+                        "</tr>"
+                }
+                document.getElementById("root").innerHTML=out;
+            })
+    }
+
+
+    function sortdescname() {
+        let select=document.getElementById("select");
+        axios.get("http://localhost:8080/api/descname")
+            .then(function (response) {
+                console.log(response);
+                let out="";
+                let data=response.data;
+                for (let i = 0; i < data.length; i++) {
+                    out+="<tr>\n" +
+                        "            <th scope=\"row\">"+data[i].id+"</th>\n" +
+                        "            <td>"+data[i].nameOz+"</td>\n" +
+                        "            <td>"+data[i].actualprice+"</td>\n" +
+                        // "            <td>"+data[i].username+"</td>\n" +
+                        "<td><a href='/admin/plan/"+data[i].id+"' class=\"btn-success btn\">Batafsil</a></td>"+
+                        "</tr>"
+                }
+                document.getElementById("root").innerHTML=out;
+            })
+    }
+</script>
+<!--<script th:inline="javascript" th:src="@{/js/js.js}" src="../static/js/js.js"></script>-->
+<!--<script th:inline="javascript" th:src="@{/js/webrtc.js}"></script>-->
+
+</html>
