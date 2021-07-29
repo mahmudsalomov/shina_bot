@@ -24,5 +24,5 @@ public class FileStorage  {
     private String uploadPath;
     @Enumerated(EnumType.STRING)
 
-    private xalq.news.beta.model.others.FileStorageStatus fileStorageStatus;
+    private FileStorageStatus fileStorageStatus;
 }

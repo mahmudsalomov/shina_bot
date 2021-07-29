@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import uz.shina.bot.util.MyConverter;
 
 @Service
 public class FileStorageService {
@@ -15,24 +16,24 @@ public class FileStorageService {
     @Autowired
     private MyConverter converter;
 
-    private final Hashids hashids;
+    private final org.hashids.Hashids hashids;
     public FileStorageService() {
-        this.hashids = new Hashids(getClass().getName(),6);
+        this.hashids = new org.hashids.Hashids(getClass().getName(),6);
     }
     @Autowired
-    private FileStorageRepository fileStorageRepository;
+    private uz.shina.bot.repository.FileStorageRepository fileStorageRepository;
 
-    public ApiResponse save(MultipartFile[] files){
-        List<FileStorage> fileStorages=new ArrayList<>();
+    public uz.shina.bot.payload.ApiResponse save(MultipartFile[] files){
+        List<uz.shina.bot.entity.FileStorage> fileStorages=new ArrayList<>();
         try {
             if (files!=null&&files.length>0){
                 for (MultipartFile multipartFile : files) {
-                    FileStorage fileStorage = FileStorage
+                    uz.shina.bot.entity.FileStorage fileStorage = uz.shina.bot.entity.FileStorage
                             .builder()
                             .name(multipartFile.getOriginalFilename())
                             .fileSize(multipartFile.getSize())
                             .contentType(multipartFile.getContentType())
-                            .fileStorageStatus(FileStorageStatus.ACTIVE)
+                            .fileStorageStatus(uz.shina.bot.entity.FileStorageStatus.ACTIVE)
                             .extension(getEx(multipartFile.getOriginalFilename()))
                             .build();
             fileStorageRepository.save(fileStorage);
@@ -99,7 +100,7 @@ public class FileStorageService {
     }
 
 
-    public FileStorage findByHashId(String hashId) {
+    public uz.shina.bot.entity.FileStorage findByHashId(String hashId) {
         return fileStorageRepository.findByHashId(hashId);
     }
 }
