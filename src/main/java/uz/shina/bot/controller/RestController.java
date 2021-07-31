@@ -22,6 +22,7 @@ import java.util.Arrays;
 
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("api")
+@CrossOrigin
 public class RestController {
     private final FileStorageService fileStorageService;
     private final ProductService productService;
