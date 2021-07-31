@@ -103,7 +103,8 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     localStorage.removeItem("catId")
-    axios.get("http://localhost:8080/api/category/all")
+    // axios.get("http://localhost:8080/api/category/all")
+    axios.get("https://shinalar.herokuapp.com/api/category/all")
         .then(function (response) {
             console.log(response)
             console.log(response.data)
@@ -131,7 +132,8 @@
 
     function restart() {
         localStorage.removeItem("catId")
-        axios.get("http://localhost:8080/api/category/all")
+        // axios.get("http://localhost:8080/api/category/all")
+        axios.get("https://shinalar.herokuapp.com/api/category/all")
             .then(function (response) {
                 console.log(response)
                 console.log(response.data)
@@ -163,7 +165,8 @@
             name:name,
             active:true
         }
-        axios.post("http://localhost:8080/api/category/add",data)
+        // axios.post("http://localhost:8080/api/category/add",data)
+        axios.post("https://shinalar.herokuapp.com/api/category/add",data)
             .then(function (response) {
                 console.log(response);
                 let out="";
@@ -184,7 +187,8 @@
 
     function modal(id) {
 
-        axios.get("http://localhost:8080/api/category/"+id)
+        // axios.get("http://localhost:8080/api/category/"+id)
+        axios.get("https://shinalar.herokuapp.com/api/category/"+id)
             .then(function (response){
                 console.log(response)
                 console.log(response.data)
@@ -212,7 +216,8 @@
         }
         console.log("*******************")
         console.log(data)
-        axios.put("http://localhost:8080/api/category/edit",data)
+        // axios.put("http://localhost:8080/api/category/edit",data)
+        axios.put("https://shinalar.herokuapp.com/api/category/edit",data)
         .then(function (response) {
             $('#modal').modal('hide');
             restart()
@@ -226,7 +231,8 @@
 
     function del(id) {
 
-        axios.get("http://localhost:8080/api/category/delete/"+id)
+        // axios.get("http://localhost:8080/api/category/delete/"+id)
+        axios.get("https://shinalar.herokuapp.com/api/category/delete/"+id)
             .then(function (response) {
                 restart()
             })
@@ -242,89 +248,7 @@
         window.location.href = "/product";
     }
 
-    function sortasc() {
-        let select=document.getElementById("select");
-        axios.get("http://localhost:8080/api/asc")
-            .then(function (response) {
-                console.log(response);
-                let out="";
-                let data=response.data;
-                for (let i = 0; i < data.length; i++) {
-                    out+="<tr>\n" +
-                        "            <th scope=\"row\">"+data[i].id+"</th>\n" +
-                        "            <td>"+data[i].nameOz+"</td>\n" +
-                        "            <td>"+data[i].actualprice+"</td>\n" +
-                        // "            <td>"+data[i].username+"</td>\n" +
-                        "<td><a href='/admin/plan/"+data[i].id+"' class=\"btn-success btn\">Batafsil</a></td>"+
-                        "</tr>"
-                }
-                document.getElementById("root").innerHTML=out;
-            })
-    }
 
-
-
-    function sortdesc() {
-        let select=document.getElementById("select");
-        axios.get("http://localhost:8080/api/desc")
-            .then(function (response) {
-                console.log(response);
-                let out="";
-                let data=response.data;
-                for (let i = 0; i < data.length; i++) {
-                    out+="<tr>\n" +
-                        "            <th scope=\"row\">"+data[i].id+"</th>\n" +
-                        "            <td>"+data[i].nameOz+"</td>\n" +
-                        "            <td>"+data[i].actualprice+"</td>\n" +
-                        // "            <td>"+data[i].username+"</td>\n" +
-                        "<td><a href='/admin/plan/"+data[i].id+"' class=\"btn-success btn\">Batafsil</a></td>"+
-                        "</tr>"
-                }
-                document.getElementById("root").innerHTML=out;
-            })
-    }
-
-
-    function sortascname() {
-        let select=document.getElementById("select");
-        axios.get("http://localhost:8080/api/ascname")
-            .then(function (response) {
-                console.log(response);
-                let out="";
-                let data=response.data;
-                for (let i = 0; i < data.length; i++) {
-                    out+="<tr>\n" +
-                        "            <th scope=\"row\">"+data[i].id+"</th>\n" +
-                        "            <td>"+data[i].nameOz+"</td>\n" +
-                        "            <td>"+data[i].actualprice+"</td>\n" +
-                        // "            <td>"+data[i].username+"</td>\n" +
-                        "<td><a href='/admin/plan/"+data[i].id+"' class=\"btn-success btn\">Batafsil</a></td>"+
-                        "</tr>"
-                }
-                document.getElementById("root").innerHTML=out;
-            })
-    }
-
-
-    function sortdescname() {
-        let select=document.getElementById("select");
-        axios.get("http://localhost:8080/api/descname")
-            .then(function (response) {
-                console.log(response);
-                let out="";
-                let data=response.data;
-                for (let i = 0; i < data.length; i++) {
-                    out+="<tr>\n" +
-                        "            <th scope=\"row\">"+data[i].id+"</th>\n" +
-                        "            <td>"+data[i].nameOz+"</td>\n" +
-                        "            <td>"+data[i].actualprice+"</td>\n" +
-                        // "            <td>"+data[i].username+"</td>\n" +
-                        "<td><a href='/admin/plan/"+data[i].id+"' class=\"btn-success btn\">Batafsil</a></td>"+
-                        "</tr>"
-                }
-                document.getElementById("root").innerHTML=out;
-            })
-    }
 </script>
 <!--<script th:inline="javascript" th:src="@{/js/js.js}" src="../static/js/js.js"></script>-->
 <!--<script th:inline="javascript" th:src="@{/js/webrtc.js}"></script>-->

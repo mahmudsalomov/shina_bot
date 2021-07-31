@@ -195,12 +195,14 @@
 
         if (localStorage.getItem("catId")){
 
-            axios.get("http://localhost:8080/api/category/"+localStorage.getItem("catId"))
+            // axios.get("http://localhost:8080/api/category/"+localStorage.getItem("catId"))
+            axios.get("https://shinalar.herokuapp.com/category/"+localStorage.getItem("catId"))
             .then(function (response){
                 document.getElementById("title").innerText=response.data.object.name
             })
 
-            axios.get("http://localhost:8080/api/product/all/"+localStorage.getItem("catId"))
+            // axios.get("http://localhost:8080/api/product/all/"+localStorage.getItem("catId"))
+            axios.get("https://shinalar.herokuapp.com/product/all/"+localStorage.getItem("catId"))
                 .then(function (response) {
                     console.log(response)
                     console.log(response.data)
@@ -226,7 +228,8 @@
                 })
         }
         else {
-            axios.get("http://localhost:8080/api/product/all")
+            // axios.get("http://localhost:8080/api/product/all")
+            axios.get("https://shinalar.herokuapp.com/product/all")
                 .then(function (response) {
                     console.log(response)
                     console.log(response.data)
@@ -260,7 +263,8 @@
 
 
     function del(id) {
-        axios.get("http://localhost:8080/api/product/delete/"+id)
+        // axios.get("http://localhost:8080/api/product/delete/"+id)
+        axios.get("https://shinalar.herokuapp.com/product/delete/"+id)
             .then(function (response) {
                 restart()
             })
@@ -293,7 +297,8 @@
            }
 
 
-           axios.post("http://localhost:8080/api/product/add",product)
+           // axios.post("http://localhost:8080/api/product/add",product)
+           axios.post("https://shinalar.herokuapp.com/product/add",product)
                .then(function (response) {
                    if (response.data.success) {
                        axios.post("/api/upload/"+response.data.object.id,param,{headers: {
@@ -366,7 +371,8 @@
            }
 
 
-           axios.put("http://localhost:8080/api/product/edit",product)
+           // axios.put("http://localhost:8080/api/product/edit",product)
+           axios.put("https://shinalar.herokuapp.com/product/edit",product)
                .then(function (response) {
                    if (response.data.success) {
                        axios.post("/api/upload/"+response.data.object.id,param,{headers: {
@@ -400,7 +406,8 @@
 
 
    function openSaveModal() {
-       axios.get('http://localhost:8080/api/category/all')
+       // axios.get('http://localhost:8080/api/category/all')
+       axios.get('https://shinalar.herokuapp.com/category/all')
            .then(function (response) {
                let data = response.data.object;
                let out = '';
@@ -415,7 +422,8 @@
 
    function openEditModal(id) {
        $('#editmodal').modal('show');
-       axios.get('http://localhost:8080/api/category/all')
+       // axios.get('http://localhost:8080/api/category/all')
+       axios.get('https://shinalar.herokuapp.com/category/all')
            .then(function (response) {
                let data = response.data.object;
                let out = '';
@@ -424,7 +432,8 @@
                }
                document.getElementById('category-select-edit').innerHTML=out;
 
-               axios.get("http://localhost:8080/api/product/"+id)
+               // axios.get("http://localhost:8080/api/product/"+id)
+               axios.get("https://shinalar.herokuapp.com/product/"+id)
                    .then(function (response){
                        console.log(response)
                        console.log(response.data)
@@ -458,8 +467,10 @@
                                        "  border-radius: 4px;\n" +
                                        "  padding: 5px;\n" +
                                        "  width: 150px;\"\n" +
-                                       "                                 src=\"http://localhost:8080/photo/"+data[i].hashId+" \">\n" +
-                                       "                            <a target=\"_blank\" href=\"http://localhost:8080/photo/"+data[i].hashId+"\" type=\"button\" class=\"btn btn-success\">Ko'rish</a>\n" +
+                                       // "                                 src=\"http://localhost:8080/photo/"+data[i].hashId+" \">\n" +
+                                       "                                 src=\"https://shinalar.herokuapp.com/photo/"+data[i].hashId+" \">\n" +
+                                       // "                            <a target=\"_blank\" href=\"http://localhost:8080/photo/"+data[i].hashId+"\" type=\"button\" class=\"btn btn-success\">Ko'rish</a>\n" +
+                                       "                            <a target=\"_blank\" href=\"https://shinalar.herokuapp.com/photo/"+data[i].hashId+"\" type=\"button\" class=\"btn btn-success\">Ko'rish</a>\n" +
                                        "                            <button value=\""+data[i].id+"\" onclick='deleteImage(id,this.value)' type=\"button\" class=\"btn btn-danger\">O'chirish</button>\n" +
                                        "</div>"
                                }
@@ -477,7 +488,8 @@
 
    function deleteImage(id,imageId) {
        let k=id;
-       axios.get('http://localhost:8080/api/images/delete/'+imageId)
+       // axios.get('http://localhost:8080/api/images/delete/'+imageId)
+       axios.get('https://shinalar.herokuapp.com/images/delete/'+imageId)
        .then(function (response) {
            $('#editmodal').modal('hide');
            openEditModal(k)

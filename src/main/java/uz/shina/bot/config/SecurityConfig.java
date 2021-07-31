@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth
                 .inMemoryAuthentication()
                 .withUser("admin")
-                .password(passwordEncoder().encode("spatium"))
+                .password(passwordEncoder().encode("shina_bot_admin"))
                 .roles("ADMIN");
     }
 }
