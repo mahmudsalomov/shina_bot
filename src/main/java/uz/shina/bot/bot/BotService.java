@@ -104,7 +104,8 @@ public class BotService {
         }
         System.out.println(col.getCol());
 //        URL url=new URL("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg");
-        URL url=new URL("http://localhost:8080/photo/"+fileStorages.get(imageNumber).getHashId());
+//        URL url=new URL("http://localhost:8080/photo/"+fileStorages.get(imageNumber).getHashId());
+        URL url=new URL("https://shinalar.herokuapp.com/"+fileStorages.get(imageNumber).getHashId());
         URLConnection connection=url.openConnection();
 
         SendPhoto msg = new SendPhoto();
