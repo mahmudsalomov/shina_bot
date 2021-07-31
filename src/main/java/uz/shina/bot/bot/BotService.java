@@ -5,7 +5,9 @@ import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import uz.shina.bot.entity.Category;
+import uz.shina.bot.entity.FileStorage;
 import uz.shina.bot.entity.Product;
 import uz.shina.bot.repository.CategoryRepository;
 import uz.shina.bot.repository.FileStorageRepository;
@@ -13,6 +15,8 @@ import uz.shina.bot.repository.ProductRepository;
 import uz.shina.bot.util.ButtonModel.Col;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,10 +37,11 @@ public class BotService {
 //        if (callbackQuery.getData().startsWith("p")){
 //            return productWithImage(callbackQuery.getFrom().getId(), Integer.valueOf(removeFirstChar(callbackQuery.getData())));
 //        }
-        if (callbackQuery.getData().startsWith("b")){
+        String callback=callbackQuery.getData();
+        if (callback.startsWith("b")){
             return category(callbackQuery.getFrom().getId());
         }
-        if (callbackQuery.getData().startsWith("c")){
+        if (callback.startsWith("c")){
             product(callbackQuery.getFrom().getId(), Integer.valueOf(removeFirstChar(callbackQuery.getData())));
         }
 
@@ -81,6 +86,38 @@ public class BotService {
         sendMessage.setParseMode(ParseMode.MARKDOWN);
         sendMessage.setReplyMarkup(col.getMarkup());
         return sendMessage;
+
+    }
+
+
+    public SendPhoto productPhoto(Long chatId,Integer productId, Integer imageNumber) throws IOException {
+
+        Col col=new Col();
+        Optional<Product> product = productRepository.findById(productId);
+        List<FileStorage> fileStorages = fileStorageRepository.findAllByProduct(product.get());
+
+        if (fileStorages.size()<=imageNumber){
+            imageNumber=0;
+            col.add("Keyingi rasm","i-"+productId+"-"+0);
+        } else{
+            col.add("Keyingi rasm","i-"+productId+"-"+(imageNumber+1));
+        }
+        System.out.println(col.getCol());
+//        URL url=new URL("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg");
+        URL url=new URL("http://localhost:8080/photo/"+fileStorages.get(imageNumber).getHashId());
+        URLConnection connection=url.openConnection();
+
+        SendPhoto msg = new SendPhoto();
+        InputFile inputFile = new InputFile();
+        inputFile.setMedia(connection.getInputStream(),"a");
+        msg.setChatId(String.valueOf(chatId));
+        msg.setPhoto(inputFile);
+        msg.setCaption(product.get().getName());
+        col.add("◀️Back","back");
+        msg.setReplyMarkup(col.getMarkup());
+
+
+        return msg;
 
     }
 
@@ -166,4 +203,44 @@ public class BotService {
         return s.substring(1);
     }
 
+
+    public Integer parseInt(String str){
+        try {
+            String[] parts = str.split("-");
+            return Integer.parseInt(parts[1]);
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public Integer parseInt3th(String str){
+        try {
+            String[] parts = str.split("-");
+            return Integer.parseInt(parts[2]);
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public String parseString(String str){
+        try {
+            String[] parts = str.split("-");
+            return parts[0];
+        }catch (Exception e){
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public String parseString3th(String str){
+        try {
+            String[] parts = str.split("-");
+            return parts[2];
+        }catch (Exception e){
+            e.printStackTrace();
+            return "";
+        }
+    }
 }

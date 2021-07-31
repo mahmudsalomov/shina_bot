@@ -17,15 +17,26 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import uz.shina.bot.util.ButtonModel.Col;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.Serializable;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static java.lang.StrictMath.toIntExact;
+import static uz.shina.bot.bot.BotService.createPhotoTemplate;
 
 @Slf4j
 @Component
@@ -48,6 +59,35 @@ public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
 
         if (update.hasMessage()){
+
+//            if(update.getMessage().getText().equals("a")){
+//
+//                try {
+//
+//                    Col col=new Col();
+//                    col.add("a","a");
+//                    URL url=new URL("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg");
+//                    URLConnection connection=url.openConnection();
+//
+//                        SendPhoto msg = new SendPhoto();
+//                        InputFile inputFile = new InputFile();
+//                        inputFile.setMedia(connection.getInputStream(),"a");
+//                        msg.setChatId(String.valueOf(update.getMessage().getChatId()));
+//                        msg.setPhoto(inputFile);
+//                        msg.setCaption("Photo");
+//                        msg.setReplyMarkup(col.getMarkup());
+//                        execute(msg);
+//
+//
+//
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            else{
+//
+//            }
+
             SendMessage sendMessage = botService.category(update.getMessage().getChatId());
             executeWithExceptionCheck(sendMessage);
         }
@@ -57,11 +97,22 @@ public class Bot extends TelegramLongPollingBot {
 //                    SendMediaGroup sendMediaGroup = botService.productWithImage(update.getCallbackQuery().getFrom().getId(), Integer.valueOf(removeFirstChar(update.getCallbackQuery().getData())));
 //                    execute(sendMediaGroup);
 //                }
+                if (update.getCallbackQuery().getData().startsWith("p")){
+                    executeWithExceptionCheck(botService.productPhoto((update.getCallbackQuery().getFrom().getId()), Integer.valueOf(removeFirstChar(update.getCallbackQuery().getData())),0));
+                }
+                else{
+
+                    if (update.getCallbackQuery().getData().startsWith("i")){
+                        executeWithExceptionCheck(botService.productPhoto((update.getCallbackQuery().getFrom().getId()), botService.parseInt(update.getCallbackQuery().getData()),botService.parseInt3th(update.getCallbackQuery().getData())));
+                    } else{
+
+                        SendMessage sendMessage = botService.finder(update.getCallbackQuery());
+                        executeWithExceptionCheck(sendMessage);
+                    }
+
+                }
 
 
-
-                SendMessage sendMessage = botService.finder(update.getCallbackQuery());
-                executeWithExceptionCheck(sendMessage);
             }
         }
 

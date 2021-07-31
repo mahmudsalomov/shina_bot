@@ -3,9 +3,11 @@ package uz.shina.bot.service;
 import org.springframework.stereotype.Service;
 import uz.shina.bot.dto.ProductDto;
 import uz.shina.bot.entity.Category;
+import uz.shina.bot.entity.FileStorage;
 import uz.shina.bot.entity.Product;
 import uz.shina.bot.payload.ApiResponse;
 import uz.shina.bot.repository.CategoryRepository;
+import uz.shina.bot.repository.FileStorageRepository;
 import uz.shina.bot.repository.ProductRepository;
 import uz.shina.bot.util.MyConverter;
 
@@ -18,11 +20,13 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final MyConverter converter;
+    private final FileStorageRepository fileStorageRepository;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, MyConverter converter) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, MyConverter converter, FileStorageRepository fileStorageRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.converter = converter;
+        this.fileStorageRepository = fileStorageRepository;
     }
 
     public ApiResponse save(ProductDto dto){
@@ -64,6 +68,13 @@ public class ProductService {
 
     public ApiResponse delete(Integer id){
         try {
+            Optional<Product> product = productRepository.findById(id);
+            if (!product.isPresent()) return converter.apiError();
+            List<FileStorage> storages = fileStorageRepository.findAllByProduct(product.get());
+            for (FileStorage storage : storages) {
+                fileStorageRepository.deleteById(storage.getId());
+            }
+            productRepository.deleteById(id);
             return converter.apiSuccess();
         }catch (Exception e){
             e.printStackTrace();
@@ -107,4 +118,15 @@ public class ProductService {
     }
 
 
+    public ApiResponse allProductByCategory(Integer id) {
+        try{
+            Optional<Category> category = categoryRepository.findById(id);
+            if (!category.isPresent()) return converter.apiError();
+            List<Product> allByCategory = productRepository.findAllByCategoryOrderByIdAsc(category.get());
+            return converter.apiSuccess(allByCategory);
+        }catch (Exception e){
+            e.printStackTrace();
+            return converter.apiError();
+        }
+    }
 }

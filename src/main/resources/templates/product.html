@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<link type="text/css" href="/webjars/bootstrap/4.1.1/css/bootstrap.min.css"
+      rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bot</title>
+</head>
+<body style="background-color: lightgray" onload="" class="d-flex justify-content-center text-center container-fluid">
+
+<section class="container text-center d-flex justify-content-center row">
+    <!--    <a href="/admin/add" class="btn btn-success float-right mt-2 mb-2 col-2">Plan qo'shish</a>-->
+    <div class="d-flex justify-content-center text-center col-12 mt-3 w-100">
+        <h1 id="title">Produktlar</h1>
+        <button onclick="openSaveModal()" class="btn float-right ml-2 col-2 btn-success">Product qo'shish</button>
+    </div>
+
+    <div class="row w-100">
+        <a href="/" class="btn float-left col-2 btn-success">Orqaga qaytish</a>
+    </div>
+
+
+
+
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editmodal" tabindex="-1" role="dialog" aria-labelledby="editmodal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit qilish</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body row">
+
+                    <input id="editname" class="form-control col-12" placeholder="Nomi"/>
+                    <div class="form-group">
+                        <label for="category-select">Kategoriyani tanlang</label>
+                        <select class="form-control" id="category-select-edit">
+                            <!--                                <option>1</option>-->
+                            <!--                                <option>2</option>-->
+                            <!--                                <option>3</option>-->
+                            <!--                                <option>4</option>-->
+                            <!--                                <option>5</option>-->
+                        </select>
+                    </div>
+                    <div class="custom-control custom-switch col-12 float-left">
+                        <input type="checkbox" class="custom-control-input" id="editactive">
+                        <label class="custom-control-label" for="editactive">Aktiv</label>
+                    </div>
+                    <div>
+                        <input type="file" id="editfile" name="filename" multiple>
+                    </div>
+
+                    <div id="images">
+                        <div class="">
+                            <img style="border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 150px;"
+                                 src="https://cdn.journaldev.com/wp-content/uploads/2012/12/java-download-file-from-url.png">
+                            <a target="_blank" href="https://cdn.journaldev.com/wp-content/uploads/2012/12/java-download-file-from-url.png" type="button" class="btn btn-success">view</a>
+                            <button type="button" class="btn btn-danger">delete</button>
+                        </div>
+
+                        <div class="">
+                            <img style="border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 150px;"
+                                 src="https://cdn.journaldev.com/wp-content/uploads/2012/12/java-download-file-from-url.png">
+                            <a target="_blank" href="https://cdn.journaldev.com/wp-content/uploads/2012/12/java-download-file-from-url.png" type="button" class="btn btn-success">view</a>
+                            <button type="button" class="btn btn-danger">delete</button>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Yopish</button>
+                    <button type="button" id="saveedit" onclick="edit(this.value)" class="btn btn-primary">Saqlash</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <!-- Save Modal -->
+    <div class="modal fade" id="savemodal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="savemodalt">Save qilish</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body row">
+
+                    <input id="name" class="form-control col-12" placeholder="Nomi"/>
+                    <div class="form-group">
+                        <label for="category-select">Kategoriyani tanlang</label>
+                        <select class="form-control" id="category-select">
+                            <!--                                <option>1</option>-->
+                            <!--                                <option>2</option>-->
+                            <!--                                <option>3</option>-->
+                            <!--                                <option>4</option>-->
+                            <!--                                <option>5</option>-->
+                        </select>
+                    </div>
+                    <div class="custom-control custom-switch col-12 float-left">
+                        <input type="checkbox" class="custom-control-input" id="saveactive">
+
+                        <label class="custom-control-label" for="saveactive">Aktiv</label>
+                    </div>
+                    <div>
+                        <input type="file" id="savefile" name="filename" multiple>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" onclick="save()" class="btn btn-primary">Saqlash</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="d-flex justify-content-center text-center col-12">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <!--                <th scope="col">Price</th>-->
+                <!--                <th scope="col">Username</th>-->
+                <!--                <th scope="col">Action</th>-->
+            </tr>
+            </thead>
+            <tbody id="root">
+            <!--            <tr>-->
+            <!--                <th scope="row">1</th>-->
+            <!--                <td>Mark</td>-->
+            <!--                <td>Otto</td>-->
+            <!--                <td>@mdo</td>-->
+            <!--                <td><a class="btn-success btn">Batafsil</a></td>-->
+            <!--            </tr>-->
+            <!--            <tr>-->
+            <!--                <th scope="row">2</th>-->
+            <!--                <td>Jacob</td>-->
+            <!--                <td>Thornton</td>-->
+            <!--                <td>@fat</td>-->
+            <!--            </tr>-->
+            <!--            <tr>-->
+            <!--                <th scope="row">3</th>-->
+            <!--                <td>Larry</td>-->
+            <!--                <td>the Bird</td>-->
+            <!--                <td>@twitter</td>-->
+            <!--            </tr>-->
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+</section>
+
+
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+
+
+   restart()
+
+    function restart() {
+        document.getElementById('editfile').value= null;
+        document.getElementById('savefile').value= null;
+
+        if (localStorage.getItem("catId")){
+
+            axios.get("http://localhost:8080/api/category/"+localStorage.getItem("catId"))
+            .then(function (response){
+                document.getElementById("title").innerText=response.data.object.name
+            })
+
+            axios.get("http://localhost:8080/api/product/all/"+localStorage.getItem("catId"))
+                .then(function (response) {
+                    console.log(response)
+                    console.log(response.data)
+                    console.log(response.data.object)
+                    // console.log(response.data.object[0])
+
+                    let out="";
+                    let data=response.data.object;
+                    for (let i = 0; i < data.length; i++) {
+                        out+="<tr>\n" +
+                            "            <th scope=\"row\">"+i+"</th>\n" +
+                            "            <td>"+data[i].name+"</td>\n" +
+                            // "            <td>"+data[i].actualprice+"</td>\n" +
+                            // "            <td>"+data[i].username+"</td>\n" +
+                            "<td>" +
+                            "<button value='"+data[i].id+"' type=\"button\" onclick='openEditModal(this.value)' class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#exampleModal\">Tahrirlash</button>" +
+                            "<button onclick='del("+data[i].id+")' class=\"btn-danger btn\">O'chirish</button>" +
+                            "</td>"+
+                            "</tr>"
+                    }
+                    document.getElementById("root").innerHTML=out;
+
+                })
+        }
+        else {
+            axios.get("http://localhost:8080/api/product/all")
+                .then(function (response) {
+                    console.log(response)
+                    console.log(response.data)
+                    console.log(response.data.object)
+                    // console.log(response.data.object[0])
+
+                    let out="";
+                    let data=response.data.object;
+                    for (let i = 0; i < data.length; i++) {
+                        out+="<tr>\n" +
+                            "            <th scope=\"row\">"+i+"</th>\n" +
+                            "            <td>"+data[i].name+"</td>\n" +
+                            // "            <td>"+data[i].actualprice+"</td>\n" +
+                            // "            <td>"+data[i].username+"</td>\n" +
+                            "<td>" +
+                            "<a href='/admin/plan/"+data[i].id+"' class=\"btn-success btn\">Products</a>" +
+                            "<button value='"+data[i].id+"' type=\"button\" onclick='openEditModal(this.value)' class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#exampleModal\">Tahrirlash</button>" +
+                            "<button onclick='del("+data[i].id+")' class=\"btn-danger btn\">O'chirish</button>" +
+                            "</td>"+
+                            "</tr>"
+                    }
+                    document.getElementById("root").innerHTML=out;
+
+                })
+        }
+
+    }
+
+
+
+
+
+    function del(id) {
+        axios.get("http://localhost:8080/api/product/delete/"+id)
+            .then(function (response) {
+                restart()
+            })
+            .catch(function (response){
+                alert("error: " + response.data)
+            })
+    }
+
+   function save() {
+       // let id=document.getElementById("id").value
+       let name=document.getElementById("name").value
+       let active = document.getElementById("saveactive").value === 'on'
+       let category_id=document.getElementById("category-select").value
+       let image=document.getElementById("savefile")
+       // console.log(id)
+       if (name.length>0){
+
+           // const uploadInput = document.getElementById('uploadBtn');
+           let param = new window.FormData();
+           // param.append('file', image.files[0]);
+           console.log(image.files)
+
+           for (let i = 0; i < image.files.length; i++) {
+               param.append('files', image.files[i]);
+           }
+           let product={
+               name:name,
+               category_id:category_id,
+               active:active,
+           }
+
+
+           axios.post("http://localhost:8080/api/product/add",product)
+               .then(function (response) {
+                   if (response.data.success) {
+                       axios.post("/api/upload/"+response.data.object.id,param,{headers: {
+                               'Content-Type': 'multipart/form-data'
+                           }})
+                           .then(function (response) {
+                               let hashId=response.data;
+                               console.log(response)
+                               $('#savemodal').modal('hide');
+                               restart()
+                               // if (response.status===200){
+                               //     if (id.length>0){
+                               //         axios.post("/api/product/add",{
+                               //             id:id,
+                               //             title:title,
+                               //             image:hashId,
+                               //             text:text
+                               //         })
+                               //             .then(function (response) {
+                               //                 console.log(response)
+                               //                 location.reload()
+                               //             })
+                               //     }
+                               //     else {
+                               //         axios.post("/admin/api/add",{
+                               //             title:title,
+                               //             image:hashId,
+                               //             text:text
+                               //         })
+                               //             .then(function (response) {
+                               //                 console.log(response)
+                               //                 location.reload()
+                               //             })
+                               //     }
+                               //
+                               // }
+                           })
+                   }
+                })
+
+
+
+
+
+       }
+       else alert("To'ldiring!")
+   }
+
+   function edit(id) {
+       let name=document.getElementById("editname").value
+       let active = document.getElementById("editactive").value === 'on'
+       let category_id=document.getElementById("category-select-edit").value
+       let image=document.getElementById("editfile")
+       // console.log(id)
+       if (name.length>0){
+
+           // const uploadInput = document.getElementById('uploadBtn');
+           let param = new window.FormData();
+           // param.append('file', image.files[0]);
+           console.log(image.files)
+
+           for (let i = 0; i < image.files.length; i++) {
+               param.append('files', image.files[i]);
+           }
+           let product={
+               id:id,
+               name:name,
+               category_id:category_id,
+               active:active,
+           }
+
+
+           axios.put("http://localhost:8080/api/product/edit",product)
+               .then(function (response) {
+                   if (response.data.success) {
+                       axios.post("/api/upload/"+response.data.object.id,param,{headers: {
+                               'Content-Type': 'multipart/form-data'
+                           }})
+                           .then(function (response) {
+                               let hashId=response.data;
+                               console.log(response)
+                               $('#editmodal').modal('hide');
+                               restart()
+
+                           })
+                   }
+               })
+
+
+
+
+
+       }
+       else alert("To'ldiring!")
+       $('#editmodal').modal('hide');
+       restart()
+
+   }
+
+
+
+
+
+
+
+   function openSaveModal() {
+       axios.get('http://localhost:8080/api/category/all')
+           .then(function (response) {
+               let data = response.data.object;
+               let out = '';
+               for (let i = 0; i < data.length; i++){
+                   out+='<option value='+data[i].id+'>'+data[i].name+'</option>'
+               }
+               document.getElementById('category-select').innerHTML=out;
+           })
+       $('#savemodal').modal('show');
+   }
+
+
+   function openEditModal(id) {
+       $('#editmodal').modal('show');
+       axios.get('http://localhost:8080/api/category/all')
+           .then(function (response) {
+               let data = response.data.object;
+               let out = '';
+               for (let i = 0; i < data.length; i++){
+                   out+='<option value='+data[i].id+'>'+data[i].name+'</option>'
+               }
+               document.getElementById('category-select-edit').innerHTML=out;
+
+               axios.get("http://localhost:8080/api/product/"+id)
+                   .then(function (response){
+                       console.log(response)
+                       console.log(response.data)
+                       let product=response.data.object
+                       document.getElementById("editname").value=product.name
+                       document.getElementById("saveedit").value=product.id
+
+                       document.getElementById("editactive").checked=product.active?'on':'off'
+                       document.getElementById('category-select-edit').value=product.category.id;
+
+                       let images="<div class=\"\">\n" +
+                           "                            <img style=\"border: 1px solid #ddd;\n" +
+                           "  border-radius: 4px;\n" +
+                           "  padding: 5px;\n" +
+                           "  width: 150px;\"\n" +
+                           "                                 src=\"https://cdn.journaldev.com/wp-content/uploads/2012/12/java-download-file-from-url.png\">\n" +
+                           "                            <a target=\"_blank\" href=\"https://cdn.journaldev.com/wp-content/uploads/2012/12/java-download-file-from-url.png\" type=\"button\" class=\"btn btn-success\">Ko'rish</a>\n" +
+                           "                            <button type=\"button\" class=\"btn btn-danger\">O'chirish</button>\n" +
+                           "</div>";
+
+                       let output ="";
+                       axios.get("api/images/all/"+id)
+                       .then(function (response){
+
+                           if (response.data.success){
+                               data = response.data.object;
+
+                               for (let i = 0; i <data.length ; i++) {
+                                   output+="<div class=\"\">\n" +
+                                       "                            <img style=\"border: 1px solid #ddd;\n" +
+                                       "  border-radius: 4px;\n" +
+                                       "  padding: 5px;\n" +
+                                       "  width: 150px;\"\n" +
+                                       "                                 src=\"http://localhost:8080/photo/"+data[i].hashId+" \">\n" +
+                                       "                            <a target=\"_blank\" href=\"http://localhost:8080/photo/"+data[i].hashId+"\" type=\"button\" class=\"btn btn-success\">Ko'rish</a>\n" +
+                                       "                            <button value=\""+data[i].id+"\" onclick='deleteImage(id,this.value)' type=\"button\" class=\"btn btn-danger\">O'chirish</button>\n" +
+                                       "</div>"
+                               }
+                               document.getElementById("images").innerHTML =output;
+
+                           }
+
+                       })
+                   })
+
+               $('#editmodal').modal('show');
+           })
+       // $('#editmodal').modal('show');
+   }
+
+   function deleteImage(id,imageId) {
+       let k=id;
+       axios.get('http://localhost:8080/api/images/delete/'+imageId)
+       .then(function (response) {
+           $('#editmodal').modal('hide');
+           openEditModal(k)
+       })
+       .catch(function (){
+           $('#editmodal').modal('hide');
+           alert('error')
+       })
+   }
+</script>
+<!--<script th:inline="javascript" th:src="@{/js/js.js}" src="../static/js/js.js"></script>-->
+<!--<script th:inline="javascript" th:src="@{/js/webrtc.js}"></script>-->
+
+</html>

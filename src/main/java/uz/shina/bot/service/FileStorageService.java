@@ -8,6 +8,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
+import uz.shina.bot.entity.FileStorage;
+import uz.shina.bot.entity.Product;
+import uz.shina.bot.payload.ApiResponse;
+import uz.shina.bot.repository.ProductRepository;
 import uz.shina.bot.util.MyConverter;
 
 @Service
@@ -22,16 +28,19 @@ public class FileStorageService {
     }
     @Autowired
     private uz.shina.bot.repository.FileStorageRepository fileStorageRepository;
-
-    public uz.shina.bot.payload.ApiResponse save(MultipartFile[] files){
+    @Autowired
+    private ProductRepository productRepository;
+    public uz.shina.bot.payload.ApiResponse save(MultipartFile[] files,Integer id){
         List<uz.shina.bot.entity.FileStorage> fileStorages=new ArrayList<>();
         try {
-            if (files!=null&&files.length>0){
+            Optional<Product> product = productRepository.findById(id);
+            if (files!=null&&files.length>0&&product.isPresent()){
                 for (MultipartFile multipartFile : files) {
                     uz.shina.bot.entity.FileStorage fileStorage = uz.shina.bot.entity.FileStorage
                             .builder()
                             .name(multipartFile.getOriginalFilename())
                             .fileSize(multipartFile.getSize())
+                            .product(product.get())
                             .contentType(multipartFile.getContentType())
                             .fileStorageStatus(uz.shina.bot.entity.FileStorageStatus.ACTIVE)
                             .extension(getEx(multipartFile.getOriginalFilename()))
@@ -102,5 +111,27 @@ public class FileStorageService {
 
     public uz.shina.bot.entity.FileStorage findByHashId(String hashId) {
         return fileStorageRepository.findByHashId(hashId);
+    }
+
+    public ApiResponse findAllByProduct(Integer product_id) {
+        try {
+            Optional<Product> product = productRepository.findById(product_id);
+            if (!product.isPresent()) return converter.apiError();
+            List<FileStorage> fileStorages = fileStorageRepository.findAllByProduct(product.get());
+            return converter.apiSuccess(fileStorages);
+        }catch (Exception e){
+            e.printStackTrace();
+            return converter.apiError();
+        }
+    }
+
+    public ApiResponse delete(Integer id) {
+        try{
+            fileStorageRepository.deleteById(id);
+            return converter.apiSuccess();
+        }catch (Exception e){
+            e.printStackTrace();
+            return converter.apiError();
+        }
     }
 }

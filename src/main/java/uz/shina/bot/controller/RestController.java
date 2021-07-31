@@ -18,6 +18,7 @@ import uz.shina.bot.service.ProductService;
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("api")
@@ -52,6 +53,11 @@ public class RestController {
         return ResponseEntity.ok(categoryService.edit(category));
     }
 
+    @GetMapping("category/delete/{id}")
+    public HttpEntity<?> deleteCategory(@PathVariable Integer id){
+        return ResponseEntity.ok(categoryService.delete(id));
+    }
+
 
 
 
@@ -62,6 +68,12 @@ public class RestController {
     public HttpEntity<?> allProduct(){
         return ResponseEntity.ok(productService.findAll());
     }
+
+    @GetMapping("product/all/{id}")
+    public HttpEntity<?> allProductByCategory(@PathVariable Integer id){
+        return ResponseEntity.ok(productService.allProductByCategory(id));
+    }
+
 
     @GetMapping("product/{id}")
     public HttpEntity<?> oneProduct(@PathVariable Integer id){
@@ -79,7 +91,26 @@ public class RestController {
     }
 
 
+    @GetMapping("product/delete/{id}")
+    public HttpEntity<?> deleteProduct(@PathVariable Integer id){
+        return ResponseEntity.ok(productService.delete(id));
+    }
 
+
+
+
+
+
+    @GetMapping("images/all/{product_id}")
+    public HttpEntity<?> findAllByProduct(@PathVariable("product_id") Integer product_id){
+        return ResponseEntity.ok(fileStorageService.findAllByProduct(product_id));
+    }
+
+
+    @GetMapping("images/delete/{id}")
+    public HttpEntity<?> deleteImage(@PathVariable("id") Integer id){
+        return ResponseEntity.ok(fileStorageService.delete(id));
+    }
 
 
 
@@ -89,11 +120,13 @@ public class RestController {
 
     /** Fayllar uchun **/
 
-    @PostMapping("upload")
-    public HttpEntity<?> upload(@RequestBody MultipartFile[] files){
+    @PostMapping("upload/{id}")
+    public HttpEntity<?> upload(@RequestBody MultipartFile[] files,@PathVariable Integer id){
 //        String image=fileStorageService.save(multipartFile);
 //        System.out.println(files.length);
-        return ResponseEntity.ok(fileStorageService.save(files));
+//        System.out.println(files.length);
+        System.out.println(Arrays.toString(files));
+        return ResponseEntity.ok(fileStorageService.save(files,id));
     }
 
 

@@ -2,6 +2,7 @@ package uz.shina.bot.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,4 +19,5 @@ public class Product {
     private boolean active;
     @ManyToOne
     private Category category;
+
 }

@@ -56,7 +56,7 @@ public class CategoryService {
 
     public ApiResponse findAll(){
         try {
-            return converter.apiSuccess(categoryRepository.findAll());
+            return converter.apiSuccess(categoryRepository.findAllByOrderByIdAsc());
         }catch (Exception e){
             e.printStackTrace();
             return converter.apiError();
@@ -64,4 +64,13 @@ public class CategoryService {
     }
 
 
+    public ApiResponse delete(Integer id) {
+        try {
+            categoryRepository.deleteById(id);
+            return converter.apiSuccess();
+        }catch (Exception e){
+            e.printStackTrace();
+            return converter.apiError();
+        }
+    }
 }
