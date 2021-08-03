@@ -6,6 +6,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
 
+@CrossOrigin
 @org.springframework.stereotype.Controller
 public class Controller {
 

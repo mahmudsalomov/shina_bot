@@ -104,7 +104,8 @@
 <script>
     localStorage.removeItem("catId")
     // axios.get("http://localhost:8080/api/category/all")
-    axios.get("https://shinalar.herokuapp.com/api/category/all")
+    axios.get("http://89.43.33.54/api/category/all")
+    // axios.get("http://89.43.33.54/api/category/all")
         .then(function (response) {
             console.log(response)
             console.log(response.data)
@@ -133,7 +134,8 @@
     function restart() {
         localStorage.removeItem("catId")
         // axios.get("http://localhost:8080/api/category/all")
-        axios.get("https://shinalar.herokuapp.com/api/category/all")
+        axios.get("http://89.43.33.54/api/category/all")
+        // axios.get("http://89.43.33.54/api/category/all")
             .then(function (response) {
                 console.log(response)
                 console.log(response.data)
@@ -166,7 +168,7 @@
             active:true
         }
         // axios.post("http://localhost:8080/api/category/add",data)
-        axios.post("https://shinalar.herokuapp.com/api/category/add",data)
+        axios.post("http://89.43.33.54/api/category/add",data)
             .then(function (response) {
                 console.log(response);
                 let out="";
@@ -188,7 +190,7 @@
     function modal(id) {
 
         // axios.get("http://localhost:8080/api/category/"+id)
-        axios.get("https://shinalar.herokuapp.com/api/category/"+id)
+        axios.get("http://89.43.33.54/api/category/"+id)
             .then(function (response){
                 console.log(response)
                 console.log(response.data)
@@ -217,7 +219,7 @@
         console.log("*******************")
         console.log(data)
         // axios.put("http://localhost:8080/api/category/edit",data)
-        axios.put("https://shinalar.herokuapp.com/api/category/edit",data)
+        axios.put("http://89.43.33.54/api/category/edit",data)
         .then(function (response) {
             $('#modal').modal('hide');
             restart()
@@ -232,7 +234,7 @@
     function del(id) {
 
         // axios.get("http://localhost:8080/api/category/delete/"+id)
-        axios.get("https://shinalar.herokuapp.com/api/category/delete/"+id)
+        axios.get("http://89.43.33.54/api/category/delete/"+id)
             .then(function (response) {
                 restart()
             })
